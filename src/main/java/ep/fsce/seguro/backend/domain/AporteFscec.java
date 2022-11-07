@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -14,6 +16,9 @@ public class AporteFscec implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(name = "id")
+	private String codigo;
+
 	@Column(name = "COD_ADM")
 	private String codAdm;
 
@@ -24,16 +29,25 @@ public class AporteFscec implements Serializable {
 	private String mmApa;
 
 	@Column(name = "IMP_APA")
-	private Integer impApa;
+	private Double impApa;
 
 	@Column(name = "IMP_DU037")
-	private Integer impDu;
+	private Double impDu;
 
-	@Column(name = "TIP_APA")
-	private String tipApa;
+	@ManyToOne
+	@JoinColumn(name = "TIP_APA")
+	private TipoAporte tipApa;
 
 	@Column(name = "IMP_APOLIQ")
-	private Integer impApoliq;
+	private Double impApoliq;
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
 
 	public String getCodAdm() {
 		return codAdm;
@@ -59,35 +73,35 @@ public class AporteFscec implements Serializable {
 		this.mmApa = mmApa;
 	}
 
-	public Integer getImpApa() {
+	public Double getImpApa() {
 		return impApa;
 	}
 
-	public void setImpApa(Integer impApa) {
+	public void setImpApa(Double impApa) {
 		this.impApa = impApa;
 	}
 
-	public Integer getImpDu() {
+	public Double getImpDu() {
 		return impDu;
 	}
 
-	public void setImpDu(Integer impDu) {
+	public void setImpDu(Double impDu) {
 		this.impDu = impDu;
 	}
 
-	public String getTipApa() {
+	public TipoAporte getTipApa() {
 		return tipApa;
 	}
 
-	public void setTipApa(String tipApa) {
+	public void setTipApa(TipoAporte tipApa) {
 		this.tipApa = tipApa;
 	}
 
-	public Integer getImpApoliq() {
+	public Double getImpApoliq() {
 		return impApoliq;
 	}
 
-	public void setImpApoliq(Integer impApoliq) {
+	public void setImpApoliq(Double impApoliq) {
 		this.impApoliq = impApoliq;
 	}
 

@@ -1,6 +1,7 @@
 package ep.fsce.seguro.backend.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "TW_PERSONA")
+@Table(name = "tw_persona")
 public class Persona implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,7 +40,7 @@ public class Persona implements Serializable {
 	private Integer edad;
 
 	@Column(name = "FEC_NAC")
-	private String fecNac;
+	private Date fecNac;
 
 	@Column(name = "FECHA_ING")
 	private String fechaIng;
@@ -126,11 +127,11 @@ public class Persona implements Serializable {
 		this.edad = edad;
 	}
 
-	public String getFecNac() {
+	public Date getFecNac() {
 		return fecNac;
 	}
 
-	public void setFecNac(String fecNac) {
+	public void setFecNac(Date fecNac) {
 		this.fecNac = fecNac;
 	}
 

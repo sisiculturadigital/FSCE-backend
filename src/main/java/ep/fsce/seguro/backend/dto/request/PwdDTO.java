@@ -9,8 +9,7 @@ public class PwdDTO {
 		super();
 	}
 
-	public PwdDTO(String email, String lastPwd, String newPwd) {
-		super();
+	public PwdDTO(String email, String newPwd) {
 		this.email = email;
 		this.newPwd = newPwd;
 	}

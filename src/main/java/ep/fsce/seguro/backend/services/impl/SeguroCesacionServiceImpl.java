@@ -12,17 +12,31 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import ep.fsce.seguro.backend.domain.AporteFscec;
+import ep.fsce.seguro.backend.domain.DetallePago;
+import ep.fsce.seguro.backend.domain.PagoRecibido;
+import ep.fsce.seguro.backend.domain.Persona;
 import ep.fsce.seguro.backend.domain.PrestamoInsp;
+import ep.fsce.seguro.backend.domain.Producto;
+import ep.fsce.seguro.backend.domain.SolicitudSede;
 import ep.fsce.seguro.backend.domain.TipoUsuario;
 import ep.fsce.seguro.backend.domain.Usuario;
+import ep.fsce.seguro.backend.dto.AporteFscecPersona;
 import ep.fsce.seguro.backend.dto.MensajeBean;
-import ep.fsce.seguro.backend.dto.PersonaBean;
+import ep.fsce.seguro.backend.dto.PagoRecibidoBean;
+import ep.fsce.seguro.backend.dto.ProductoBean;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
+import ep.fsce.seguro.backend.dto.request.DetallePagoDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
 import ep.fsce.seguro.backend.dto.request.RecoverPassDTO;
+import ep.fsce.seguro.backend.dto.request.SolicitudPrestamoDTO;
 import ep.fsce.seguro.backend.dto.request.UsuarioDTO;
+import ep.fsce.seguro.backend.dto.response.AporteFscecReponse;
+import ep.fsce.seguro.backend.dto.response.DetallePagoResponse;
+import ep.fsce.seguro.backend.dto.response.PagosResponse;
 import ep.fsce.seguro.backend.dto.response.PrestamoResponse;
+import ep.fsce.seguro.backend.dto.response.ProductosReponse;
 import ep.fsce.seguro.backend.dto.response.TokenResponse;
 import ep.fsce.seguro.backend.jwt.UserDetailsImpl;
 import ep.fsce.seguro.backend.services.SeguroCesacionService;
@@ -47,7 +61,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 				return MensajeUtil.mensajeReponse("422", "Debe ingresar todos los campos solicitados");
 			}
 
-			Optional<PersonaBean> pe = personaRepository.findByDniAndCodAdmAndFecNac(user.getDni(), user.getCodAdm(),
+			Optional<Persona> pe = personaRepository.findByDniAndCodAdmAndFecNac(user.getDni(), user.getCodAdm(),
 					user.getFechaNac());
 
 			if (pe.isPresent()) {
@@ -177,10 +191,10 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public byte[] exportReportePrestamoPorPersona(String dni) throws Exception {
-		Optional<PersonaBean> persona = personaRepository.findByDni(dni);
+		Optional<Persona> persona = personaRepository.findByDni(dni);
 		JasperPrint jasperPrint = null;
 		if (persona.isPresent()) {
-			List<PersonaBean> listPersona = new ArrayList<>();
+			List<Persona> listPersona = new ArrayList<>();
 			listPersona.add(persona.get());
 			File file = ResourceUtils.getFile("classpath:reportSaldoPrestamo.jasper");
 			JasperReport report = (JasperReport) JRLoader.loadObject(file);
@@ -189,6 +203,106 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 			jasperPrint = JasperFillManager.fillReport(report, parameter, new JREmptyDataSource());
 		}
 		return JasperExportManager.exportReportToPdf(jasperPrint);
+	}
+
+	@Override
+	public AporteFscecReponse consultaAportePorPersona(String codAdm) {
+		List<AporteFscec> aporte = aporteFscecRepository.findByCodAdm(codAdm);
+		AporteFscecReponse reponse = new AporteFscecReponse();
+		List<AporteFscecPersona> listAporteFscec = new ArrayList<>();
+
+		if (!aporte.isEmpty()) {
+			for (AporteFscec item : aporte) {
+				AporteFscecPersona apPersona = new AporteFscecPersona();
+				apPersona.setCodAdm(item.getCodAdm());
+				apPersona.setAaApa(item.getAaApa());
+				apPersona.setImpApa(item.getImpApa());
+				apPersona.setImpDu(item.getImpDu());
+				apPersona.setMmApa(item.getMmApa());
+				apPersona.setTipoApa(item.getTipApa().getDescApa());
+				apPersona.setImpApoLiq(item.getImpApoliq());
+				listAporteFscec.add(apPersona);
+			}
+			reponse.setAportes(listAporteFscec);
+		}
+		return reponse;
+	}
+
+	@Override
+	public ProductosReponse consultaProductos() {
+		ProductosReponse response = new ProductosReponse();
+		List<Producto> producto = productoRepository.findAll();
+
+		List<ProductoBean> lista = new ArrayList<>();
+
+		if (!producto.isEmpty()) {
+			for (Producto item : producto) {
+				ProductoBean p = new ProductoBean();
+				p.setCodigo(item.getEcPtmo());
+				p.setDesProducto(item.getDesProducto());
+				lista.add(p);
+			}
+			response.setProductos(lista);
+		}
+
+		return response;
+	}
+
+	@Override
+	public MensajeBean registrarSolicitud(SolicitudPrestamoDTO solicitud) {
+		SolicitudSede soli = new SolicitudSede();
+		soli.setCodProducto(solicitud.getCodProducto());
+		soli.setDni(soli.getDni());
+		soli.setImporte(solicitud.getImporte());
+		solicitudSedeRepository.save(soli);
+		return null;
+	}
+
+	@Override
+	public PagosResponse consultaPagosRecibidosPorSocio(String codAdm) {
+		PagosResponse response = new PagosResponse();
+		List<PagoRecibido> lista = pagoRecibidoRepository.findByCodAdm(codAdm);
+		List<PagoRecibidoBean> listaPago = new ArrayList<>();
+		if (!lista.isEmpty()) {
+			for (PagoRecibido item : lista) {
+				PagoRecibidoBean pr = new PagoRecibidoBean();
+				pr.setConcepto(item.getConcepto());
+				pr.setImporte(item.getImporte());
+				pr.setFechChe(item.getFecChe());
+				listaPago.add(pr);
+			}
+			response.setCodAdm(codAdm);
+			response.setPagos(listaPago);
+		}
+		return response;
+	}
+
+	@Override
+	public List<DetallePagoResponse> consultaDetallePago(DetallePagoDTO detallePago) {
+
+		List<DetallePagoResponse> response = new ArrayList<>();
+
+		List<DetallePago> data = detallePagoRepository.buscarDetalle(detallePago.getCodAdm(), detallePago.getAaCuo(),
+				detallePago.getMmCuo(), detallePago.getNroChe());
+
+		if (!data.isEmpty()) {
+			for (DetallePago item : data) {
+				DetallePagoResponse detalle = new DetallePagoResponse();
+				detalle.setAaCuo(item.getDetallePagopk().getAaCuo());
+				detalle.setCodAdm(item.getDetallePagopk().getCodAdm());
+				detalle.setMmCuo(item.getDetallePagopk().getMmCuo());
+				detalle.setNroChe(item.getDetallePagopk().getNroChe());
+				detalle.setNroCuo(item.getNroCuo());
+				detalle.setImpCuCap(item.getImpCuCap());
+				detalle.setImpPago(item.getImpPago());
+				detalle.setSituacion(item.getSituacion());
+				detalle.setImpCuoInt(item.getImpCuoInt());
+				detalle.setImpCuo(item.getImpCuo());
+				response.add(detalle);
+			}
+		}
+
+		return response;
 	}
 
 }

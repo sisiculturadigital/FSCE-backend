@@ -1,7 +1,8 @@
-package ep.fsce.seguro.backend.dto;
+package ep.fsce.seguro.backend.dto.response;
 
-public class DetallePagoPrestamo {
+public class DetallePagoResponse {
 
+	private String codAdm;
 	private String aaCuo;
 	private String mmCuo;
 	private String nroChe;
@@ -12,6 +13,14 @@ public class DetallePagoPrestamo {
 	private String situacion;
 	private Double impCuoInt;
 	private Double impCuo;
+
+	public String getCodAdm() {
+		return codAdm;
+	}
+
+	public void setCodAdm(String codAdm) {
+		this.codAdm = codAdm;
+	}
 
 	public String getAaCuo() {
 		return aaCuo;

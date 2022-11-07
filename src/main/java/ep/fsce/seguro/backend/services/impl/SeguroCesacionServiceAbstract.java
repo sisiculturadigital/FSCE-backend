@@ -34,4 +34,18 @@ public abstract class SeguroCesacionServiceAbstract {
 	@Autowired
 	protected PrestamosIsnpRepository prestamosIsnpRepository;
 
+	@Autowired
+	protected AporteFscecRepository aporteFscecRepository;
+	
+	@Autowired
+	protected ProductoRepository productoRepository;
+	
+	@Autowired
+	protected SolicitudSedeRepository solicitudSedeRepository;
+	
+	@Autowired
+	protected PagoRecibidoRepository pagoRecibidoRepository;
+	
+	@Autowired
+	protected DetallePagoRepository detallePagoRepository;
 }

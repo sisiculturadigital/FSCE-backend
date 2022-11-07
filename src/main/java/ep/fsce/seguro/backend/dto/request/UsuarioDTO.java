@@ -12,7 +12,7 @@ public class UsuarioDTO {
 	private String apellidos;
 	private String dni;
 	private String codAdm;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "GMT-5:00")
 	private Date fechaNac;
 	private String codRole;
 

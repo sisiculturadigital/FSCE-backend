@@ -1,11 +1,15 @@
 package ep.fsce.seguro.backend.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TW_TIPO_APORTE")
@@ -19,6 +23,10 @@ public class TipoAporte implements Serializable {
 
 	@Column(name = "DESC_APA")
 	private String descApa;
+	
+	@OneToMany(mappedBy = "tipApa")
+	@JsonIgnore
+	private List<AporteFscec> aporteFscec; 
 
 	public String getTipApa() {
 		return tipApa;

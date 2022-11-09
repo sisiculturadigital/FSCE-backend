@@ -11,7 +11,7 @@ import ep.fsce.seguro.backend.domain.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
-	Usuario findByEmail(String email);
+	Optional<Usuario> findByEmail(String email);
 
 	@Query("SELECT t FROM Usuario t WHERE t.email =?1 and t.password=?2")
 	Usuario findEmailPass(String email, String pass);

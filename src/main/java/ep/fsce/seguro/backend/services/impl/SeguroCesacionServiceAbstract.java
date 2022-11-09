@@ -41,7 +41,7 @@ public abstract class SeguroCesacionServiceAbstract {
 	protected ProductoRepository productoRepository;
 	
 	@Autowired
-	protected SolicitudSedeRepository solicitudSedeRepository;
+	protected PreSolicitudRepository solicitudSedeRepository;
 	
 	@Autowired
 	protected PagoRecibidoRepository pagoRecibidoRepository;

@@ -12,8 +12,7 @@ import ep.fsce.seguro.backend.domain.DetallePagoPk;
 @Repository
 public interface DetallePagoRepository extends JpaRepository<DetallePago, DetallePagoPk> {
 
-	@Query("SELECT d FROM DetallePago d WHERE d.detallePagopk.codAdm = ?1 and d.detallePagopk.aaCuo = ?2 "
-			+ "and d.detallePagopk.mmCuo = ?3 and d.detallePagopk.nroChe = ?4")
+	@Query("SELECT d FROM DetallePago d WHERE d.detallePagopk.codAdm = ?1 and d.detallePagopk.aaCuo = ?2 and d.detallePagopk.mmCuo = ?3 and d.detallePagopk.nroChe = ?4")
 	List<DetallePago> buscarDetalle(String codAdm, String aaCuo, String mmCuo, String nroChe);
 
 }

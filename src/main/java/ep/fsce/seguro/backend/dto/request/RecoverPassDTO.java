@@ -1,10 +1,15 @@
 package ep.fsce.seguro.backend.dto.request;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class RecoverPassDTO {
 	private String email;
 	private String dni;
 	private String codAdm;
-	private String fechaNac;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "GMT-5:00")
+	private Date fechaNac;
 	private String password;
 
 	public String getEmail() {
@@ -31,11 +36,11 @@ public class RecoverPassDTO {
 		this.codAdm = codAdm;
 	}
 
-	public String getFechaNac() {
+	public Date getFechaNac() {
 		return fechaNac;
 	}
 
-	public void setFechaNac(String fechaNac) {
+	public void setFechaNac(Date fechaNac) {
 		this.fechaNac = fechaNac;
 	}
 

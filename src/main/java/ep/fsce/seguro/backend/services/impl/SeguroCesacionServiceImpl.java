@@ -2,12 +2,15 @@ package ep.fsce.seguro.backend.services.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.mail.SimpleMailMessage;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -18,7 +21,7 @@ import ep.fsce.seguro.backend.domain.PagoRecibido;
 import ep.fsce.seguro.backend.domain.Persona;
 import ep.fsce.seguro.backend.domain.PrestamoInsp;
 import ep.fsce.seguro.backend.domain.Producto;
-import ep.fsce.seguro.backend.domain.SolicitudSede;
+import ep.fsce.seguro.backend.domain.PreSolicitud;
 import ep.fsce.seguro.backend.domain.TipoUsuario;
 import ep.fsce.seguro.backend.domain.Usuario;
 import ep.fsce.seguro.backend.dto.AporteFscecPersona;
@@ -89,7 +92,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 					usuarioRepository.save(u);
 
-					return MensajeUtil.mensajeReponse("200", "Usuario registrado éxitoso");
+					return MensajeUtil.mensajeReponse("200", "Registro de usuario éxitoso");
 
 				} else {
 					return MensajeUtil.mensajeReponse("422", "Codigo de rol invalido");
@@ -115,10 +118,10 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public MensajeBean actualizarPassword(PwdDTO pwd) {
-		Usuario u = usuarioRepository.findByEmail(pwd.getEmail());
-		if (!Objects.isNull(u)) {
-			u.setPassword(encoder.encode(pwd.getNewPwd()));
-			usuarioRepository.save(u);
+		Optional<Usuario> u = usuarioRepository.findByEmail(pwd.getEmail());
+		if (u.isPresent()) {
+			u.get().setPassword(encoder.encode(pwd.getNewPwd()));
+			usuarioRepository.save(u.get());
 			return MensajeUtil.mensajeReponse("200", "Password actualizado");
 		} else {
 			return MensajeUtil.mensajeReponse("422", "Datos incorrectos");
@@ -127,28 +130,43 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public MensajeBean enviarCorreoOlvidePassword(EmailDTO email) {
-		MensajeBean msj = new MensajeBean();
 		try {
-			SimpleMailMessage message = new SimpleMailMessage();
-			message.setFrom("randy.vdiaz@gmail.com");
+			Optional<Usuario> p = usuarioRepository.findByEmail(email.getTo());
+			if (!p.isPresent()) {
+				return MensajeUtil.mensajeReponse("422", "Correo no registrado");
+			}
+
+			MimeMessage msg = javaMailSender.createMimeMessage();
+			MimeMessageHelper message = new MimeMessageHelper(msg, true);
+
+			message.setFrom(email.getTo());
 			message.setTo(email.getTo());
-			message.setText(email.getMessage());
+			message.setText(email.getMessage(), true);
 			message.setSubject(email.getSubject());
-			javaMailSender.send(message);
-			msj.setCode("200");
-			msj.setMessage("Correo enviado");
-			return msj;
+			javaMailSender.send(msg);
+			return MensajeUtil.mensajeReponse("200", "Correo enviado");
+
 		} catch (Exception ex) {
-			msj.setCode("200");
-			msj.setMessage("Correo no enviado " + ex.getMessage());
-			return msj;
+			return MensajeUtil.mensajeReponse("500", "Correo no enviado " + ex.getMessage());
 		}
 
 	}
 
 	@Override
 	public MensajeBean recuperarPassword(RecoverPassDTO recuperarPass) {
-		return null;
+		Optional<Persona> pe = personaRepository.findByDniAndCodAdmAndFecNac(recuperarPass.getDni(),
+				recuperarPass.getCodAdm(), recuperarPass.getFechaNac());
+		if (pe.isPresent()) {
+			Optional<Usuario> u = usuarioRepository.findByEmail(recuperarPass.getEmail());
+			if (u.isPresent()) {
+				u.get().setPassword(encoder.encode(recuperarPass.getPassword()));
+				usuarioRepository.save(u.get());
+				return MensajeUtil.mensajeReponse("200", "Password actualizado");
+			} else {
+				return MensajeUtil.mensajeReponse("422", "Datos incorrectos");
+			}
+		}
+		return MensajeUtil.mensajeReponse("200", "Constraseña Actualizada");
 	}
 
 	@Override
@@ -158,6 +176,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 		if (!lstPrestamo.isEmpty()) {
 			for (PrestamoInsp item : lstPrestamo) {
 				PrestamoResponse p = new PrestamoResponse();
+				p.setNroChe(item.getNroChe());
 				p.setCodAdm(item.getCodAdm());
 				p.setDest(item.getDest());
 				p.setTipoPrest(item.getTipoPrest());
@@ -250,12 +269,17 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public MensajeBean registrarSolicitud(SolicitudPrestamoDTO solicitud) {
-		SolicitudSede soli = new SolicitudSede();
-		soli.setCodProducto(solicitud.getCodProducto());
-		soli.setDni(soli.getDni());
-		soli.setImporte(solicitud.getImporte());
+		PreSolicitud soli = new PreSolicitud();
+		soli.setNroSol("2");
+		soli.setNroCuo(solicitud.getNroCuo());
+		soli.setImpSol(solicitud.getImpSol());
+		soli.setUsuIng(solicitud.getUsuIng());
+		soli.setFecIng(new Date());
+		soli.setLiquidez(solicitud.getLiquidez());
+		soli.setDni(solicitud.getDni());
+		soli.setEcPtmo(solicitud.getEcPtmo());
 		solicitudSedeRepository.save(soli);
-		return null;
+		return MensajeUtil.mensajeReponse("200", "Registro solicitud exitoso");
 	}
 
 	@Override
@@ -279,9 +303,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public List<DetallePagoResponse> consultaDetallePago(DetallePagoDTO detallePago) {
-
 		List<DetallePagoResponse> response = new ArrayList<>();
-
 		List<DetallePago> data = detallePagoRepository.buscarDetalle(detallePago.getCodAdm(), detallePago.getAaCuo(),
 				detallePago.getMmCuo(), detallePago.getNroChe());
 

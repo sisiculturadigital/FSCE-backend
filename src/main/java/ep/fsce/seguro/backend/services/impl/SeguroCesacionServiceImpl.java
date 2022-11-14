@@ -37,6 +37,7 @@ import ep.fsce.seguro.backend.domain.Usuario;
 import ep.fsce.seguro.backend.dto.AporteFscecPersona;
 import ep.fsce.seguro.backend.dto.MensajeBean;
 import ep.fsce.seguro.backend.dto.PagoRecibidoBean;
+import ep.fsce.seguro.backend.dto.PersonaBean;
 import ep.fsce.seguro.backend.dto.Prestamo;
 import ep.fsce.seguro.backend.dto.ProductoBean;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
@@ -403,6 +404,24 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	private boolean validarPartesIdDetalle(String[] partesDetalle) {
 		return partesDetalle.length != 3;
+	}
+
+	@Override
+	public PersonaBean datosPersona(String email) {
+		Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+		PersonaBean persona = new PersonaBean();
+		if (usuario.isPresent()) {
+			Optional<Persona> p = personaRepository.findByDni(usuario.get().getDni());
+			if (p.isPresent()) {
+				persona.setDni(p.get().getDni());
+				persona.setCodAdm(p.get().getCodAdm());
+				persona.setNombreApe(p.get().getNom());
+				persona.setSituacion(p.get().getSituacion());
+				persona.setGrado(p.get().getGrado());
+				persona.setEdad(p.get().getEdad());
+			}
+		}
+		return persona;
 	}
 
 }

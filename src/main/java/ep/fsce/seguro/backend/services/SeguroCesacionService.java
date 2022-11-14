@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
 import ep.fsce.seguro.backend.dto.MensajeBean;
+import ep.fsce.seguro.backend.dto.PersonaBean;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -44,5 +45,7 @@ public interface SeguroCesacionService {
 	public PagosResponse consultaPagosRecibidosPorSocio(String codAdm);
 
 	public List<DetallePagoResponse> consultaDetallePago(String codAdm , String id);
+
+	public PersonaBean datosPersona(String email);
 
 }

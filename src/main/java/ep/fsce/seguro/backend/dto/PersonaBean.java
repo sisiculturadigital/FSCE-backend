@@ -10,6 +10,7 @@ public class PersonaBean {
 	private String nombreApe;
 	private Integer edad;
 	private String proceso;
+	private Double impRem;
 	private Double ingBruto;
 	private Double ingLiquido;
 	private Date fechIngreso;
@@ -102,6 +103,14 @@ public class PersonaBean {
 
 	public void setSituacion(String situacion) {
 		this.situacion = situacion;
+	}
+
+	public Double getImpRem() {
+		return impRem;
+	}
+
+	public void setImpRem(Double impRem) {
+		this.impRem = impRem;
 	}
 
 }

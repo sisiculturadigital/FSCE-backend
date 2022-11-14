@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ep.fsce.seguro.backend.dto.MensajeBean;
+import ep.fsce.seguro.backend.dto.PersonaBean;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -27,6 +28,13 @@ import ep.fsce.seguro.backend.dto.response.TokenResponse;
 
 @RestController
 public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
+	
+	//REST 00 -JEVGA
+	
+	@GetMapping("/private/datos/{email}")
+	public ResponseEntity<PersonaBean> datosPersona(@PathVariable(value = "email") String email){
+		return ResponseEntity.ok(seguroCesacionService.datosPersona(email));
+	}
 
 	// REST 01 - JVEGA
 	@PostMapping("/publico/u/registro")

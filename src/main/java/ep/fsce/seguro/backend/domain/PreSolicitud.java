@@ -31,7 +31,7 @@ public class PreSolicitud implements Serializable {
 	private Date fecIng;
 
 	@Column(name = "NLIQUIDEZ")
-	private Double Liquidez;
+	private Double nLiquidez;
 
 	@Column(name = "DNI")
 	private String dni;
@@ -79,12 +79,12 @@ public class PreSolicitud implements Serializable {
 		this.fecIng = fecIng;
 	}
 
-	public Double getLiquidez() {
-		return Liquidez;
+	public Double getnLiquidez() {
+		return nLiquidez;
 	}
 
-	public void setLiquidez(Double liquidez) {
-		Liquidez = liquidez;
+	public void setnLiquidez(Double nLiquidez) {
+		this.nLiquidez = nLiquidez;
 	}
 
 	public String getDni() {

@@ -2,8 +2,6 @@ package ep.fsce.seguro.backend.ws;
 
 import java.util.List;
 
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ep.fsce.seguro.backend.dto.MensajeBean;
-import ep.fsce.seguro.backend.dto.SaldoTipoPrestamo;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -25,7 +22,7 @@ import ep.fsce.seguro.backend.dto.response.DetallePagoResponse;
 import ep.fsce.seguro.backend.dto.response.NoticiasReponse;
 import ep.fsce.seguro.backend.dto.response.PagosResponse;
 import ep.fsce.seguro.backend.dto.response.ProductosReponse;
-import ep.fsce.seguro.backend.dto.response.PrestamoResponse;
+import ep.fsce.seguro.backend.dto.response.SaldoTipoPrestamoResponse;
 import ep.fsce.seguro.backend.dto.response.TokenResponse;
 
 @RestController
@@ -64,7 +61,7 @@ public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
 
 	// REST 06 - JVEGA
 	@GetMapping("/private/p/prestamo/{dni}")
-	public ResponseEntity<List<SaldoTipoPrestamo>> consultaPrestamosPorPersona(@PathVariable(value = "dni") String dni) {
+	public ResponseEntity<List<SaldoTipoPrestamoResponse>> consultaPrestamosPorPersona(@PathVariable(value = "dni") String dni) {
 		return ResponseEntity.ok(seguroCesacionService.consultaPrestamosPorPersona(dni));
 	}
 

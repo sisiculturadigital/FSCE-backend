@@ -6,7 +6,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
 import ep.fsce.seguro.backend.dto.MensajeBean;
-import ep.fsce.seguro.backend.dto.SaldoTipoPrestamo;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -16,8 +15,8 @@ import ep.fsce.seguro.backend.dto.request.UsuarioDTO;
 import ep.fsce.seguro.backend.dto.response.AporteFscecReponse;
 import ep.fsce.seguro.backend.dto.response.DetallePagoResponse;
 import ep.fsce.seguro.backend.dto.response.PagosResponse;
-import ep.fsce.seguro.backend.dto.response.PrestamoResponse;
 import ep.fsce.seguro.backend.dto.response.ProductosReponse;
+import ep.fsce.seguro.backend.dto.response.SaldoTipoPrestamoResponse;
 import ep.fsce.seguro.backend.dto.response.TokenResponse;
 
 public interface SeguroCesacionService {
@@ -32,9 +31,9 @@ public interface SeguroCesacionService {
 
 	public MensajeBean recuperarPassword(RecoverPassDTO recuperarPass);
 
-	public List<SaldoTipoPrestamo> consultaPrestamosPorPersona(String dni);
+	public List<SaldoTipoPrestamoResponse> consultaPrestamosPorPersona(String dni);
 	
-	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni) throws Exception;
+	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni);
 
 	public AporteFscecReponse consultaAportePorPersona(String codAdm);
 

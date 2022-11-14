@@ -2,7 +2,7 @@ package ep.fsce.seguro.backend.dto.response;
 
 import ep.fsce.seguro.backend.dto.SituFinancieraBean;
 
-public class SaldoPrestamoReponse {
+public class SaldoPrestamoResponse {
 	
 	private SituFinancieraBean prestamo;
 

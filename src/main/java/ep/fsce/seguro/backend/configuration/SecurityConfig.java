@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//import ep.fsce.seguro.backend.jwt.JwtAuthenticationFilter;
 import ep.fsce.seguro.backend.jwt.JwtAuthorizationFilter;
 
 @Configuration
@@ -38,11 +37,6 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
-//		
-//		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
-//		jwtAuthenticationFilter.setAuthenticationManager(authManager);
-//		jwtAuthenticationFilter.setFilterProcessesUrl("/authenticate");
-
 		return http.cors().and().csrf().disable()
 				.authorizeHttpRequests()
 				.antMatchers("/publico/**").permitAll()
@@ -52,7 +46,6 @@ public class SecurityConfig {
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				// .addFilter(jwtAuthenticationFilter)
 				.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}
 

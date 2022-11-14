@@ -23,13 +23,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<Usuario> u = usuarioRepository.findByEmail(email);
-		if (!u.isPresent()) {
-			throw new UnprocessableEntityException("500", HttpStatus.INTERNAL_SERVER_ERROR, "No se encontró usuario");
-		}
 		if (u.isPresent()) {
 			return new UserDetailsImpl(u.get());
 		} else {
-			throw new UsernameNotFoundException("El usuario " + email + " no existe");
+			throw new UnprocessableEntityException("500", HttpStatus.INTERNAL_SERVER_ERROR, "No se encontró usuario");
 		}
 	}
 

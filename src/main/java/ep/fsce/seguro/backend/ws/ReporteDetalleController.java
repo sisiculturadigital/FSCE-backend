@@ -18,7 +18,7 @@ public class ReporteDetalleController {
 
 	// REST 08 - JVEGA
 	@GetMapping(value = "/publico/pdf/{dni}", produces = MediaType.APPLICATION_PDF_VALUE)
-	public ResponseEntity<Resource> exportDetallePago(@PathVariable(value = "dni") String dni) throws Exception {
+	public ResponseEntity<Resource> exportDetallePago(@PathVariable(value = "dni") String dni) {
 		return seguroCesacionService.exportReportePrestamoPorPersona(dni);
 	}
 }

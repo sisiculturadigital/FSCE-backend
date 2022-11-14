@@ -1,8 +1,8 @@
-package ep.fsce.seguro.backend.dto.response;
+package ep.fsce.seguro.backend.dto;
 
 import java.util.Date;
 
-public class PrestamoResponse {
+public class Prestamo {
 
 	private String nroChe;
 	private String codAdm;

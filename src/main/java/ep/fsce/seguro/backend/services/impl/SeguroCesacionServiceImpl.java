@@ -37,8 +37,8 @@ import ep.fsce.seguro.backend.domain.Usuario;
 import ep.fsce.seguro.backend.dto.AporteFscecPersona;
 import ep.fsce.seguro.backend.dto.MensajeBean;
 import ep.fsce.seguro.backend.dto.PagoRecibidoBean;
+import ep.fsce.seguro.backend.dto.Prestamo;
 import ep.fsce.seguro.backend.dto.ProductoBean;
-import ep.fsce.seguro.backend.dto.SaldoTipoPrestamo;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -48,8 +48,8 @@ import ep.fsce.seguro.backend.dto.request.UsuarioDTO;
 import ep.fsce.seguro.backend.dto.response.AporteFscecReponse;
 import ep.fsce.seguro.backend.dto.response.DetallePagoResponse;
 import ep.fsce.seguro.backend.dto.response.PagosResponse;
-import ep.fsce.seguro.backend.dto.response.PrestamoResponse;
 import ep.fsce.seguro.backend.dto.response.ProductosReponse;
+import ep.fsce.seguro.backend.dto.response.SaldoTipoPrestamoResponse;
 import ep.fsce.seguro.backend.dto.response.TokenResponse;
 import ep.fsce.seguro.backend.exception.UnprocessableEntityException;
 import ep.fsce.seguro.backend.jwt.UserDetailsImpl;
@@ -169,16 +169,16 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 	}
 
 	@Override
-	public List<SaldoTipoPrestamo> consultaPrestamosPorPersona(String dni) {
+	public List<SaldoTipoPrestamoResponse> consultaPrestamosPorPersona(String dni) {
 		List<PrestamoInsp> lstPrestamo = prestamosIsnpRepository.findByDni(dni);
-		List<SaldoTipoPrestamo> response = new ArrayList<>();
+		List<SaldoTipoPrestamoResponse> response = new ArrayList<>();
 		Map<String, List<PrestamoInsp>> groupByPrestamo = groupByPrestamoIsnp(lstPrestamo);
-		groupByPrestamo.forEach((key, value)->{
-			List<PrestamoResponse> listPrestamo = new ArrayList<>();
-			SaldoTipoPrestamo s = new SaldoTipoPrestamo();
+		groupByPrestamo.forEach((key, value) -> {
+			List<Prestamo> listPrestamo = new ArrayList<>();
+			SaldoTipoPrestamoResponse s = new SaldoTipoPrestamoResponse();
 			s.setTipoPrestamo(key);
-			value.forEach(item ->{
-				PrestamoResponse p = new PrestamoResponse();
+			value.forEach(item -> {
+				Prestamo p = new Prestamo();
 				p.setNroChe(item.getNroChe());
 				p.setCodAdm(item.getCodAdm());
 				p.setDest(item.getDest());
@@ -217,7 +217,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 	}
 
 	@Override
-	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni) throws Exception {
+	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni) {
 		Optional<Persona> persona = personaRepository.findByDni(dni);
 		JasperPrint jasperPrint = null;
 		if (persona.isPresent()) {
@@ -316,7 +316,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 			soli.setImpSol(solicitud.getImpSol());
 			soli.setUsuIng(solicitud.getUsuIng().toUpperCase());
 			soli.setFecIng(new Date());
-			soli.setLiquidez(solicitud.getLiquidez());
+			soli.setnLiquidez(solicitud.getLiquidez());
 			soli.setDni(solicitud.getDni());
 			soli.setEcPtmo(solicitud.getEcPtmo());
 			solicitudSedeRepository.save(soli);

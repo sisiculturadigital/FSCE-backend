@@ -5,7 +5,8 @@ public class Constantes {
 	public static final String FORMAT_DATE_NUMBER = "yyyyMMdd";
 	public static final String FORMAT_DATE_SHOW = "dd/MM/yyyy";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
-
+	public static final String ZONA_HORARIA = "GMT-5:00";
+	
 	public static final String LEVEL_INFO = "INFO";
 	public static final String LEVEL_DEBUG = "DEBUG";
 	public static final String LEVEL_ERROR = "ERROR";

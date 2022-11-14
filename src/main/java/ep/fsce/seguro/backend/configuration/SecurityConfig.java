@@ -43,7 +43,7 @@ public class SecurityConfig {
 //		jwtAuthenticationFilter.setAuthenticationManager(authManager);
 //		jwtAuthenticationFilter.setFilterProcessesUrl("/authenticate");
 
-		return http.csrf().disable()
+		return http.cors().and().csrf().disable()
 				.authorizeHttpRequests()
 				.antMatchers("/publico/**").permitAll()
 				.anyRequest()

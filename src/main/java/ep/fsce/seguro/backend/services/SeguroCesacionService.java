@@ -2,9 +2,12 @@ package ep.fsce.seguro.backend.services;
 
 import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
+
 import ep.fsce.seguro.backend.dto.MensajeBean;
+import ep.fsce.seguro.backend.dto.SaldoTipoPrestamo;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
-import ep.fsce.seguro.backend.dto.request.DetallePagoDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
 import ep.fsce.seguro.backend.dto.request.RecoverPassDTO;
@@ -29,9 +32,9 @@ public interface SeguroCesacionService {
 
 	public MensajeBean recuperarPassword(RecoverPassDTO recuperarPass);
 
-	public List<PrestamoResponse> consultaPrestamosPorPersona(String dni);
+	public List<SaldoTipoPrestamo> consultaPrestamosPorPersona(String dni);
 	
-	public byte[] exportReportePrestamoPorPersona(String dni) throws Exception;
+	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni) throws Exception;
 
 	public AporteFscecReponse consultaAportePorPersona(String codAdm);
 
@@ -41,6 +44,6 @@ public interface SeguroCesacionService {
 
 	public PagosResponse consultaPagosRecibidosPorSocio(String codAdm);
 
-	public List<DetallePagoResponse> consultaDetallePago(DetallePagoDTO detallePago);
+	public List<DetallePagoResponse> consultaDetallePago(String codAdm , String id);
 
 }

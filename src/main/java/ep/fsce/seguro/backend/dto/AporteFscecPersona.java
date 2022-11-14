@@ -5,10 +5,10 @@ public class AporteFscecPersona {
 	private String codAdm;
 	private String aaApa;
 	private String mmApa;
-	private Double impApa;
-	private Double impDu;
+	private String impApa;
+	private String impDu;
 	private String tipoApa;
-	private Double impApoLiq;
+	private String impApoLiq;
 
 	public String getCodAdm() {
 		return codAdm;
@@ -34,19 +34,19 @@ public class AporteFscecPersona {
 		this.mmApa = mmApa;
 	}
 
-	public Double getImpApa() {
+	public String getImpApa() {
 		return impApa;
 	}
 
-	public void setImpApa(Double impApa) {
+	public void setImpApa(String impApa) {
 		this.impApa = impApa;
 	}
 
-	public Double getImpDu() {
+	public String getImpDu() {
 		return impDu;
 	}
 
-	public void setImpDu(Double impDu) {
+	public void setImpDu(String impDu) {
 		this.impDu = impDu;
 	}
 
@@ -58,11 +58,11 @@ public class AporteFscecPersona {
 		this.tipoApa = tipoApa;
 	}
 
-	public Double getImpApoLiq() {
+	public String getImpApoLiq() {
 		return impApoLiq;
 	}
 
-	public void setImpApoLiq(Double impApoLiq) {
+	public void setImpApoLiq(String impApoLiq) {
 		this.impApoLiq = impApoLiq;
 	}
 

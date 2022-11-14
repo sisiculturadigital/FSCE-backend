@@ -39,7 +39,7 @@ public class ParametersValidateUtil {
 	}
 
 	public static boolean cumpleValidacionSession(AuthDTO auth) {
-		
+
 		if (auth.getEmail().isEmpty() || auth.getEmail() == null) {
 			return false;
 		}
@@ -50,4 +50,27 @@ public class ParametersValidateUtil {
 
 		return true;
 	}
+
+	public static boolean validarCamposIdDetalle(String codAdm, String nroChe, String aaCuo, String mmCuo) {
+		
+		if (codAdm.isEmpty()) {
+			return false;
+		}
+		
+		if (nroChe.isEmpty()) {
+			return false;
+		}
+		
+		if (aaCuo.isEmpty()) {
+			return false;
+		}
+
+		if (mmCuo.isEmpty()) {
+			return false;
+		}
+
+		return true;
+		
+	}
+
 }

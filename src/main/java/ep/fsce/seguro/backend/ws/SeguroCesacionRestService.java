@@ -1,13 +1,8 @@
 package ep.fsce.seguro.backend.ws;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ep.fsce.seguro.backend.dto.MensajeBean;
+import ep.fsce.seguro.backend.dto.SaldoTipoPrestamo;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
-import ep.fsce.seguro.backend.dto.request.DetallePagoDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
 import ep.fsce.seguro.backend.dto.request.RecoverPassDTO;
@@ -69,32 +64,16 @@ public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
 
 	// REST 06 - JVEGA
 	@GetMapping("/private/p/prestamo/{dni}")
-	public ResponseEntity<List<PrestamoResponse>> consultaPrestamosPorPersona(@PathVariable(value = "dni") String dni) {
+	public ResponseEntity<List<SaldoTipoPrestamo>> consultaPrestamosPorPersona(@PathVariable(value = "dni") String dni) {
 		return ResponseEntity.ok(seguroCesacionService.consultaPrestamosPorPersona(dni));
 	}
 
-	// REST 07 - JVEGA
-	@GetMapping("/private/p/detalle/pago")
-	public ResponseEntity<List<DetallePagoResponse>> consultaDetallePago(@RequestBody DetallePagoDTO detallePago) {
-		List<DetallePagoResponse> reponse = seguroCesacionService.consultaDetallePago(detallePago);
+	// REST 07 - JVEGA nro-aa-mm
+	@GetMapping("/private/p/detalle/{codAdm}/pago/{idDetalle}")
+	public ResponseEntity<List<DetallePagoResponse>> consultaDetallePago(@PathVariable(value = "codAdm") String codAdm,
+			@PathVariable(value = "idDetalle") String idDetalle) {
+		List<DetallePagoResponse> reponse = seguroCesacionService.consultaDetallePago(codAdm, idDetalle);
 		return ResponseEntity.ok(reponse);
-	}
-
-	// REST 08 - JVEGA
-	@PostMapping("/private/p/reporte/detallepago/{dni}")
-	public ResponseEntity<Resource> exportDetallePago(@PathVariable(value = "dni") String dni,
-			@RequestBody DetallePagoDTO detalle) throws Exception {
-		byte[] reporte = seguroCesacionService.exportReportePrestamoPorPersona(dni);
-		String sdf = (new SimpleDateFormat("dd/MM/yyyy")).format(new Date());
-		StringBuilder stringBuilder = new StringBuilder().append(dni);
-		ContentDisposition contentDisposition = ContentDisposition.builder("attachment").filename(stringBuilder
-				.append("-" + detalle.getMmCuo().toUpperCase()).append("-").append(sdf).append(".pdf").toString())
-				.build();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentDisposition(contentDisposition);
-		return ResponseEntity.ok().contentLength((long) reporte.length).contentType(MediaType.APPLICATION_PDF)
-				.headers(headers).body(new ByteArrayResource(reporte));
-
 	}
 
 	// REST 09 - JVEGA

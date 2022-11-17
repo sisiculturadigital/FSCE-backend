@@ -254,7 +254,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 		if (persona.isPresent() && !data.isEmpty()) {
 			try {
-				
+
 				List<Persona> listPersona = new ArrayList<>();
 				listPersona.add(persona.get());
 
@@ -264,17 +264,15 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 				ClassPathResource resource = new ClassPathResource(
 						"reportes" + File.separator + "reportSaldoPrestamo.jasper");
 
-				ClassPathResource imagen = new ClassPathResource(
-						"images" + File.separator + "logo.png");
+				ClassPathResource imagen = new ClassPathResource("images" + File.separator + "logo.png");
 
 				InputStream jasperStream = resource.getInputStream();
 				JasperReport report = (JasperReport) JRLoader.loadObject(jasperStream);
 				HashMap<String, Object> parameter = new HashMap<>();
 
-				
 				parameter.put("dsPersona", new JRBeanArrayDataSource(listPersona.toArray()));
 				parameter.put("dsPago", new JRBeanArrayDataSource(listDetalle.toArray()));
-				parameter.put("logo", new FileInputStream(imagen.getFile()));
+				parameter.put("logo", imagen.getInputStream());
 				jasperPrint = JasperFillManager.fillReport(report, parameter, new JREmptyDataSource());
 
 				byte[] reporte = JasperExportManager.exportReportToPdf(jasperPrint);
@@ -305,8 +303,15 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 		DecimalFormat df = new DecimalFormat(Constantes.DECIMAL_FORMAT_05);
 
 		if (p.isPresent()) {
-			int nroAporte = Integer.parseInt(p.get().getNroApo());
-			double impAporte = p.get().getImpApo();
+			int nroAporte = 0;
+			double impAporte = 0.0;
+			if (!Objects.isNull(p.get().getNroApo()) && !p.get().getNroApo().isEmpty() ) {
+				nroAporte = Integer.parseInt(p.get().getNroApo());
+			}
+			
+			if (!Objects.isNull(p.get().getImpApo()) && !p.get().getImpApo().toString().isEmpty() ) {
+				impAporte = p.get().getImpApo();
+			}
 
 			double subTotalAporte = 0;
 			double totalAporte = 0;
@@ -332,7 +337,7 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 					i++;
 				}
 
-				totalAporte = totalAporte + impAporte;
+				totalAporte = subTotalAporte + impAporte;
 
 				reponse.setSubTotalAportes(df.format(subTotalAporte));
 				reponse.setSubTotalCuotas(String.valueOf(i));

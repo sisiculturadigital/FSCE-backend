@@ -1,6 +1,7 @@
 package ep.fsce.seguro.backend.services.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -25,8 +26,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+
 import ep.fsce.seguro.backend.domain.AporteFscec;
 import ep.fsce.seguro.backend.domain.DetallePago;
+import ep.fsce.seguro.backend.domain.LineaProducto;
+import ep.fsce.seguro.backend.domain.Noticia;
 import ep.fsce.seguro.backend.domain.PagoRecibido;
 import ep.fsce.seguro.backend.domain.Persona;
 import ep.fsce.seguro.backend.domain.PrestamoInsp;
@@ -40,6 +44,7 @@ import ep.fsce.seguro.backend.dto.PagoRecibidoBean;
 import ep.fsce.seguro.backend.dto.PersonaBean;
 import ep.fsce.seguro.backend.dto.Prestamo;
 import ep.fsce.seguro.backend.dto.ProductoBean;
+import ep.fsce.seguro.backend.dto.SolicitudDs;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -48,6 +53,7 @@ import ep.fsce.seguro.backend.dto.request.SolicitudPrestamoDTO;
 import ep.fsce.seguro.backend.dto.request.UsuarioDTO;
 import ep.fsce.seguro.backend.dto.response.AporteFscecReponse;
 import ep.fsce.seguro.backend.dto.response.DetallePagoResponse;
+import ep.fsce.seguro.backend.dto.response.NoticiasReponse;
 import ep.fsce.seguro.backend.dto.response.PagosResponse;
 import ep.fsce.seguro.backend.dto.response.ProductosReponse;
 import ep.fsce.seguro.backend.dto.response.SaldoTipoPrestamoResponse;
@@ -174,65 +180,101 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 		List<PrestamoInsp> lstPrestamo = prestamosIsnpRepository.findByDni(dni);
 		List<SaldoTipoPrestamoResponse> response = new ArrayList<>();
 		Map<String, List<PrestamoInsp>> groupByPrestamo = groupByPrestamoIsnp(lstPrestamo);
-		groupByPrestamo.forEach((key, value) -> {
-			List<Prestamo> listPrestamo = new ArrayList<>();
+		List<LineaProducto> lp = lineaProductoRepository.findByLineaDni(dni);
+		lp.forEach(item -> {
+			Optional<Producto> product = productoRepository.findByEcPtmo(item.getLineaProductoPk().getEcPtmo());
 			SaldoTipoPrestamoResponse s = new SaldoTipoPrestamoResponse();
-			s.setTipoPrestamo(key);
-			value.forEach(item -> {
-				Prestamo p = new Prestamo();
-				p.setNroChe(item.getNroChe());
-				p.setCodAdm(item.getCodAdm());
-				p.setDest(item.getDest());
-				p.setTipoPrest(item.getTipoPrest());
-				p.setAnoEnv(item.getAnoEnv());
-				p.setMesEnv(item.getMesEnv());
-				p.setImpSol(item.getImpSol());
-				p.setDeudaTotIni(item.getDeudaTotIni());
-				p.setFecAprob(item.getFecAprob());
-				p.setImpDesmbls(item.getImpDesmbls());
-				p.setNroCuo(item.getNroCuo());
-				p.setCuoMen(item.getCuoMen());
-				p.setCuoCap(item.getCuoCap());
-				p.setIntereses(item.getIntereses());
-				p.setSaldoActual(item.getSaldoActual());
-				p.setSaldoSint(item.getSaldoSint());
-				p.setDni(item.getDni());
-				p.setSaldoVigente(item.getSaldoVigente());
-				p.setSaldoVigenteCap(item.getSaldoVigenteCap());
-				p.setAtraso(item.getAtraso());
-				p.setDevGracia(item.getDevGracia());
-				p.setTipoDscto(item.getTipoDscto());
-				p.setCodEp(item.getCodEp());
-				p.setCodCpmp(item.getCodCpmp());
-				p.setRefinancia(item.getRefinancia());
-				listPrestamo.add(p);
+			if (product.isPresent()) {
+				s.setCodigoPrestamo(product.get().getEcPtmo());
+				s.setTipoPrestamo(product.get().getDesProducto());
+			}
+			s.setImpApo(item.getImporte().toString());
+			Prestamo p = new Prestamo();
+			groupByPrestamo.forEach((key, value) -> {
+				List<Prestamo> listPrestamo = new ArrayList<>();
+				if (item.getLineaProductoPk().getEcPtmo().equals(key)) {
+					value.forEach(x -> {
+						p.setNroChe(x.getNroChe());
+						p.setCodAdm(x.getCodAdm());
+						p.setDest(x.getDest());
+						p.setTipoPrest(x.getTipoPrest());
+						p.setAnoEnv(x.getAnoEnv());
+						p.setMesEnv(x.getMesEnv());
+						p.setImpSol(x.getImpSol());
+						p.setDeudaTotIni(x.getDeudaTotIni());
+						p.setFecAprob(x.getFecAprob());
+						p.setImpDesmbls(x.getImpDesmbls());
+						p.setNroCuo(x.getNroCuo());
+						p.setCuoMen(x.getCuoMen());
+						p.setCuoCap(x.getCuoCap());
+						p.setIntereses(x.getIntereses());
+						p.setSaldoActual(x.getSaldoActual());
+						p.setSaldoSint(x.getSaldoSint());
+						p.setDni(x.getDni());
+						p.setSaldoVigente(x.getSaldoVigente());
+						p.setSaldoVigenteCap(x.getSaldoVigenteCap());
+						p.setAtraso(x.getAtraso());
+						p.setDevGracia(x.getDevGracia());
+						p.setTipoDscto(x.getTipoDscto());
+						p.setCodEp(x.getCodEp());
+						p.setCodCpmp(x.getCodCpmp());
+						p.setRefinancia(x.getRefinancia());
+						p.setCodEcPtmo(x.getEcPtmo());
+						listPrestamo.add(p);
+					});
+					s.setPrestamos(listPrestamo);
+				}
 			});
-			s.setPrestamos(listPrestamo);
 			response.add(s);
 		});
 		return response;
 	}
 
-	private static Map<String, List<PrestamoInsp>> groupByPrestamoIsnp(List<PrestamoInsp> empleados) {
-		return empleados.stream().collect(Collectors.groupingBy(PrestamoInsp::getTipoPrest, Collectors.toList()));
+	private static Map<String, List<PrestamoInsp>> groupByPrestamoIsnp(List<PrestamoInsp> prestamos) {
+		return prestamos.stream().collect(Collectors.groupingBy(PrestamoInsp::getEcPtmo, Collectors.toList()));
 	}
 
 	@Override
-	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni) {
+	public ResponseEntity<Resource> exportReportePrestamoPorPersona(String dni, String idDetalle, String codAdm) {
 		Optional<Persona> persona = personaRepository.findByDni(dni);
 		JasperPrint jasperPrint = null;
-		if (persona.isPresent()) {
+		String[] partesIdDetalle = idDetalle.split(Constantes.GUION);
+		if (validarPartesIdDetalle(partesIdDetalle)) {
+			throw new UnprocessableEntityException("422", HttpStatus.BAD_REQUEST,
+					"Ingrese correctamente detalle NRO-AA-MM");
+		}
+		String nroChe = partesIdDetalle[0];
+		String aaCuo = partesIdDetalle[1];
+		String mmCuo = partesIdDetalle[2];
+		if (!ParametersValidateUtil.validarCamposIdDetalle(codAdm, nroChe, aaCuo, mmCuo)) {
+			throw new UnprocessableEntityException("422", HttpStatus.BAD_REQUEST,
+					"Ingrese correctamente los parametros");
+		}
+		List<DetallePago> data = detallePagoRepository.buscarDetalle(codAdm, aaCuo, mmCuo, nroChe);
+
+		if (persona.isPresent() && !data.isEmpty()) {
 			try {
+				
 				List<Persona> listPersona = new ArrayList<>();
 				listPersona.add(persona.get());
 
+				List<DetallePago> listDetalle = new ArrayList<>();
+				listDetalle.add(data.get(0));
+
 				ClassPathResource resource = new ClassPathResource(
 						"reportes" + File.separator + "reportSaldoPrestamo.jasper");
+
+				ClassPathResource imagen = new ClassPathResource(
+						"images" + File.separator + "logo.png");
+
 				InputStream jasperStream = resource.getInputStream();
 				JasperReport report = (JasperReport) JRLoader.loadObject(jasperStream);
 				HashMap<String, Object> parameter = new HashMap<>();
 
+				
 				parameter.put("dsPersona", new JRBeanArrayDataSource(listPersona.toArray()));
+				parameter.put("dsPago", new JRBeanArrayDataSource(listDetalle.toArray()));
+				parameter.put("logo", new FileInputStream(imagen.getFile()));
 				jasperPrint = JasperFillManager.fillReport(report, parameter, new JREmptyDataSource());
 
 				byte[] reporte = JasperExportManager.exportReportToPdf(jasperPrint);
@@ -257,34 +299,49 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 	@Override
 	public AporteFscecReponse consultaAportePorPersona(String codAdm) {
 		List<AporteFscec> aporte = aporteFscecRepository.findByCodAdm(codAdm);
+		Optional<Persona> p = personaRepository.findByCodAdm(codAdm);
 		AporteFscecReponse reponse = new AporteFscecReponse();
 		List<AporteFscecPersona> listAporteFscec = new ArrayList<>();
 		DecimalFormat df = new DecimalFormat(Constantes.DECIMAL_FORMAT_05);
-		double totalAporte = 0;
-		int i = 0;
-		if (!aporte.isEmpty()) {
-			for (AporteFscec item : aporte) {
-				AporteFscecPersona apPersona = new AporteFscecPersona();
-				apPersona.setCodAdm(item.getCodAdm());
-				apPersona.setAaApa(item.getAaApa());
-				apPersona.setImpApa(item.getImpApa().toString().startsWith(Constantes.STRING_CERO)
-						? Constantes.STRING_CERO.concat(df.format(item.getImpApa()))
-						: df.format(item.getImpApa()));
-				apPersona.setImpDu(item.getImpDu().toString().startsWith(Constantes.STRING_CERO)
-						? Constantes.STRING_CERO.concat(df.format(item.getImpDu()))
-						: df.format(item.getImpDu()));
-				apPersona.setMmApa(item.getMmApa());
-				apPersona.setTipoApa(item.getTipApa().getDescApa());
-				apPersona.setImpApoLiq(item.getImpApoliq().toString().startsWith(Constantes.STRING_CERO)
-						? Constantes.STRING_CERO.concat(df.format(item.getImpApoliq()))
-						: df.format(item.getImpApoliq()));
-				listAporteFscec.add(apPersona);
-				totalAporte = totalAporte + item.getImpApa();
-				i++;
+
+		if (p.isPresent()) {
+			int nroAporte = Integer.parseInt(p.get().getNroApo());
+			double impAporte = p.get().getImpApo();
+
+			double subTotalAporte = 0;
+			double totalAporte = 0;
+			int i = 0;
+			if (!aporte.isEmpty()) {
+				for (AporteFscec item : aporte) {
+					AporteFscecPersona apPersona = new AporteFscecPersona();
+					apPersona.setCodAdm(item.getCodAdm());
+					apPersona.setAaApa(item.getAaApa());
+					apPersona.setImpApa(item.getImpApa().toString().startsWith(Constantes.STRING_CERO)
+							? Constantes.STRING_CERO.concat(df.format(item.getImpApa()))
+							: df.format(item.getImpApa()));
+					apPersona.setImpDu(item.getImpDu().toString().startsWith(Constantes.STRING_CERO)
+							? Constantes.STRING_CERO.concat(df.format(item.getImpDu()))
+							: df.format(item.getImpDu()));
+					apPersona.setMmApa(item.getMmApa());
+					apPersona.setTipoApa(item.getTipApa().getDescApa());
+					apPersona.setImpApoLiq(item.getImpApoliq().toString().startsWith(Constantes.STRING_CERO)
+							? Constantes.STRING_CERO.concat(df.format(item.getImpApoliq()))
+							: df.format(item.getImpApoliq()));
+					listAporteFscec.add(apPersona);
+					subTotalAporte = subTotalAporte + item.getImpApa();
+					i++;
+				}
+
+				totalAporte = totalAporte + impAporte;
+
+				reponse.setSubTotalAportes(df.format(subTotalAporte));
+				reponse.setSubTotalCuotas(String.valueOf(i));
+
+				reponse.setTotalAportes(df.format(totalAporte));
+				reponse.setTotalCuotas(String.valueOf(i + nroAporte));
+				reponse.setAportes(listAporteFscec);
 			}
-			reponse.setTotalAportes(df.format(totalAporte));
-			reponse.setTotalCuotas(String.valueOf(i));
-			reponse.setAportes(listAporteFscec);
+
 		}
 		return reponse;
 	}
@@ -422,6 +479,36 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 			}
 		}
 		return persona;
+	}
+
+	@Override
+	public List<NoticiasReponse> listaNoticias() {
+		List<Noticia> listNoticia = noticiaRepository.findNoticiaMesAnio();
+		List<NoticiasReponse> response = new ArrayList<>();
+		listNoticia.forEach(item -> {
+			NoticiasReponse n = new NoticiasReponse();
+			n.setTitulo(item.getTitulo());
+			n.setAutor(item.getAutor());
+			n.setCoAutor(item.getCoAutor());
+			n.setFechPubl(item.getFechPubl());
+			n.setFuente(item.getFuente());
+			n.setImg1(item.getImg1());
+			n.setImg2(item.getImg2());
+			n.setParrafo1(item.getParrafo1());
+			n.setParrafo2(item.getParrafo2());
+			n.setParrafo3(item.getParrafo3());
+			n.setParrafo4(item.getParrafo4());
+			n.setParrafo5(item.getParrafo5());
+			n.setParrafo6(item.getParrafo6());
+			response.add(n);
+		});
+		return response;
+	}
+
+	@Override
+	public MensajeBean registrarSolcitudDs(SolicitudDs solicitudDs) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

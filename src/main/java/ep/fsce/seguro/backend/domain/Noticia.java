@@ -1,9 +1,24 @@
-package ep.fsce.seguro.backend.dto.response;
+package ep.fsce.seguro.backend.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class NoticiasReponse {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "TW_NOTICIA")
+public class Noticia implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private String titulo;
 	private String autor;
 	private String coAutor;
@@ -17,6 +32,16 @@ public class NoticiasReponse {
 	private String parrafo4;
 	private String parrafo5;
 	private String parrafo6;
+	@Column(name = "FECHA_REGISTRO")
+	private Date fechRegis;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getTitulo() {
 		return titulo;
@@ -120,6 +145,14 @@ public class NoticiasReponse {
 
 	public void setParrafo6(String parrafo6) {
 		this.parrafo6 = parrafo6;
+	}
+
+	public Date getFechRegis() {
+		return fechRegis;
+	}
+
+	public void setFechRegis(Date fechRegis) {
+		this.fechRegis = fechRegis;
 	}
 
 }

@@ -5,7 +5,9 @@ import java.util.List;
 import ep.fsce.seguro.backend.dto.Prestamo;
 
 public class SaldoTipoPrestamoResponse {
+	private String codigoPrestamo;
 	private String tipoPrestamo;
+	private String impApo;
 	private List<Prestamo> prestamos;
 
 	public String getTipoPrestamo() {
@@ -22,6 +24,22 @@ public class SaldoTipoPrestamoResponse {
 
 	public void setPrestamos(List<Prestamo> prestamos) {
 		this.prestamos = prestamos;
+	}
+
+	public String getCodigoPrestamo() {
+		return codigoPrestamo;
+	}
+
+	public void setCodigoPrestamo(String codigoPrestamo) {
+		this.codigoPrestamo = codigoPrestamo;
+	}
+
+	public String getImpApo() {
+		return impApo;
+	}
+
+	public void setImpApo(String impApo) {
+		this.impApo = impApo;
 	}
 
 }

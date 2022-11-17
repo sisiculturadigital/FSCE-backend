@@ -12,5 +12,6 @@ import ep.fsce.seguro.backend.domain.Persona;
 public interface PersonaRepository extends JpaRepository<Persona, String>{
 	
 	Optional<Persona> findByDni(String dni);
+	Optional<Persona> findByCodAdm(String codAdm);
 	Optional<Persona> findByDniAndCodAdmAndFecNac(String dni , String codAdm , Date fecha);
 }

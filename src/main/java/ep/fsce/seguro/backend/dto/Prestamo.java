@@ -29,6 +29,7 @@ public class Prestamo {
 	private String codEp;
 	private String codCpmp;
 	private String refinancia;
+	private String codEcPtmo;
 
 	public String getNroChe() {
 		return nroChe;
@@ -228,6 +229,14 @@ public class Prestamo {
 
 	public void setRefinancia(String refinancia) {
 		this.refinancia = refinancia;
+	}
+
+	public String getCodEcPtmo() {
+		return codEcPtmo;
+	}
+
+	public void setCodEcPtmo(String codEcPtmo) {
+		this.codEcPtmo = codEcPtmo;
 	}
 
 }

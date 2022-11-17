@@ -86,7 +86,7 @@ public class PrestamoInsp implements Serializable {
 
 	@Column(name = "COD_CPMP")
 	private String codCpmp;
-	
+
 	@Column(name = "EC_PTMO")
 	private String ecPtmo;
 
@@ -291,6 +291,14 @@ public class PrestamoInsp implements Serializable {
 
 	public void setRefinancia(String refinancia) {
 		this.refinancia = refinancia;
+	}
+
+	public String getEcPtmo() {
+		return ecPtmo;
+	}
+
+	public void setEcPtmo(String ecPtmo) {
+		this.ecPtmo = ecPtmo;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ep.fsce.seguro.backend.dto.MensajeBean;
 import ep.fsce.seguro.backend.dto.PersonaBean;
+import ep.fsce.seguro.backend.dto.SolicitudDs;
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
 import ep.fsce.seguro.backend.dto.request.EmailDTO;
 import ep.fsce.seguro.backend.dto.request.PwdDTO;
@@ -28,11 +29,11 @@ import ep.fsce.seguro.backend.dto.response.TokenResponse;
 
 @RestController
 public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
-	
-	//REST 00 -JEVGA
-	
+
+	// REST 00 -JEVGA
+
 	@GetMapping("/private/datos/{email}")
-	public ResponseEntity<PersonaBean> datosPersona(@PathVariable(value = "email") String email){
+	public ResponseEntity<PersonaBean> datosPersona(@PathVariable(value = "email") String email) {
 		return ResponseEntity.ok(seguroCesacionService.datosPersona(email));
 	}
 
@@ -69,7 +70,8 @@ public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
 
 	// REST 06 - JVEGA
 	@GetMapping("/private/p/prestamo/{dni}")
-	public ResponseEntity<List<SaldoTipoPrestamoResponse>> consultaPrestamosPorPersona(@PathVariable(value = "dni") String dni) {
+	public ResponseEntity<List<SaldoTipoPrestamoResponse>> consultaPrestamosPorPersona(
+			@PathVariable(value = "dni") String dni) {
 		return ResponseEntity.ok(seguroCesacionService.consultaPrestamosPorPersona(dni));
 	}
 
@@ -111,9 +113,15 @@ public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
 
 	// REST 15 - JVEGA
 	@GetMapping("/publico/noticias")
-	public ResponseEntity<NoticiasReponse> listaNoticia() {
-		NoticiasReponse reponse = new NoticiasReponse();
-		return ResponseEntity.ok(reponse);
+	public ResponseEntity<List<NoticiasReponse>> listaNoticias() {
+		List<NoticiasReponse> response = seguroCesacionService.listaNoticias();
+		return ResponseEntity.ok(response);
 	}
 
+	// REST 16 - JVEGA
+	@PostMapping("private/solicitud/Ds")
+	public ResponseEntity<MensajeBean> registrarSolicitudDs(@RequestBody SolicitudDs solicitudDs) {
+		MensajeBean response = seguroCesacionService.registrarSolcitudDs(solicitudDs);
+		return ResponseEntity.ok(response);
+	}
 }

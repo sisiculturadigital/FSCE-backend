@@ -6,8 +6,11 @@ import ep.fsce.seguro.backend.dto.AporteFscecPersona;
 
 public class AporteFscecReponse {
 
+	private String subTotalAportes;
+	private String subTotalCuotas;
 	private String totalAportes;
 	private String totalCuotas;
+
 	private List<AporteFscecPersona> aportes;
 
 	public List<AporteFscecPersona> getAportes() {
@@ -16,6 +19,22 @@ public class AporteFscecReponse {
 
 	public void setAportes(List<AporteFscecPersona> aportes) {
 		this.aportes = aportes;
+	}
+
+	public String getSubTotalAportes() {
+		return subTotalAportes;
+	}
+
+	public void setSubTotalAportes(String subTotalAportes) {
+		this.subTotalAportes = subTotalAportes;
+	}
+
+	public String getSubTotalCuotas() {
+		return subTotalCuotas;
+	}
+
+	public void setSubTotalCuotas(String subTotalCuotas) {
+		this.subTotalCuotas = subTotalCuotas;
 	}
 
 	public String getTotalAportes() {

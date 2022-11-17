@@ -63,6 +63,12 @@ public class Persona implements Serializable {
 	@Column(name = "EXCEDIDO")
 	private String excedido;
 
+	@Column(name = "NRO_APO")
+	private String nroApo;
+
+	@Column(name = "IMP_APO")
+	private Double impApo;
+
 	public String getDni() {
 		return dni;
 	}
@@ -189,6 +195,22 @@ public class Persona implements Serializable {
 
 	public void setExcedido(String excedido) {
 		this.excedido = excedido;
+	}
+
+	public String getNroApo() {
+		return nroApo;
+	}
+
+	public void setNroApo(String nroApo) {
+		this.nroApo = nroApo;
+	}
+
+	public Double getImpApo() {
+		return impApo;
+	}
+
+	public void setImpApo(Double impApo) {
+		this.impApo = impApo;
 	}
 
 }

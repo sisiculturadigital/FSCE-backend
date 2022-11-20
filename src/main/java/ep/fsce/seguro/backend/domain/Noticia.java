@@ -20,17 +20,33 @@ public class Noticia implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String titulo;
+	@Column(name = "AUTOR")
 	private String autor;
+	@Column(name = "CO_AUTOR")
 	private String coAutor;
+	@Column(name = "FUENTE")
 	private String fuente;
+	@Column(name = "FECH_PUBLICACION")
 	private Date fechPubl;
+	@Column(name = "AA_PUBLIC")
+	private String aaPublic;
+	@Column(name = "MM_PUBLIC")
+	private String mmPublic;
+	@Column(name = "IMAGEN_UNO")
 	private String img1;
+	@Column(name = "IMAGEN_DOS")
 	private String img2;
+	@Column(name = "PARRAFO_UNO")
 	private String parrafo1;
+	@Column(name = "PARRAFO_DOS")
 	private String parrafo2;
+	@Column(name = "PARRAFO_TRES")
 	private String parrafo3;
+	@Column(name = "PARRAFO_CUATRO")
 	private String parrafo4;
+	@Column(name = "PARRAFO_CINCO")
 	private String parrafo5;
+	@Column(name = "PARRAFO_SEIS")
 	private String parrafo6;
 	@Column(name = "FECHA_REGISTRO")
 	private Date fechRegis;
@@ -153,6 +169,22 @@ public class Noticia implements Serializable {
 
 	public void setFechRegis(Date fechRegis) {
 		this.fechRegis = fechRegis;
+	}
+
+	public String getAaPublic() {
+		return aaPublic;
+	}
+
+	public void setAaPublic(String aaPublic) {
+		this.aaPublic = aaPublic;
+	}
+
+	public String getMmPublic() {
+		return mmPublic;
+	}
+
+	public void setMmPublic(String mmPublic) {
+		this.mmPublic = mmPublic;
 	}
 
 }

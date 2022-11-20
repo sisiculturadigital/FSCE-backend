@@ -119,7 +119,7 @@ public class SeguroCesacionRestService extends SeguroCesacionRestAbastract {
 	}
 
 	// REST 16 - JVEGA
-	@PostMapping("private/solicitud/Ds")
+	@PostMapping("private/solicitud/ds")
 	public ResponseEntity<MensajeBean> registrarSolicitudDs(@RequestBody SolicitudDs solicitudDs) {
 		MensajeBean response = seguroCesacionService.registrarSolcitudDs(solicitudDs);
 		return ResponseEntity.ok(response);

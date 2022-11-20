@@ -1,11 +1,11 @@
 package ep.fsce.seguro.backend.services.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +32,8 @@ import ep.fsce.seguro.backend.domain.DetallePago;
 import ep.fsce.seguro.backend.domain.LineaProducto;
 import ep.fsce.seguro.backend.domain.Noticia;
 import ep.fsce.seguro.backend.domain.PagoRecibido;
+import ep.fsce.seguro.backend.domain.PersRem;
+import ep.fsce.seguro.backend.domain.PersRemDatos;
 import ep.fsce.seguro.backend.domain.Persona;
 import ep.fsce.seguro.backend.domain.PrestamoInsp;
 import ep.fsce.seguro.backend.domain.Producto;
@@ -305,11 +307,11 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 		if (p.isPresent()) {
 			int nroAporte = 0;
 			double impAporte = 0.0;
-			if (!Objects.isNull(p.get().getNroApo()) && !p.get().getNroApo().isEmpty() ) {
+			if (!Objects.isNull(p.get().getNroApo()) && !p.get().getNroApo().isEmpty()) {
 				nroAporte = Integer.parseInt(p.get().getNroApo());
 			}
-			
-			if (!Objects.isNull(p.get().getImpApo()) && !p.get().getImpApo().toString().isEmpty() ) {
+
+			if (!Objects.isNull(p.get().getImpApo()) && !p.get().getImpApo().toString().isEmpty()) {
 				impAporte = p.get().getImpApo();
 			}
 
@@ -488,7 +490,11 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public List<NoticiasReponse> listaNoticias() {
-		List<Noticia> listNoticia = noticiaRepository.findNoticiaMesAnio();
+		Calendar fecha = Calendar.getInstance();
+		Integer anio = fecha.get(Calendar.YEAR);
+		Integer mes = fecha.get(Calendar.MONTH) + 1;
+
+		List<Noticia> listNoticia = noticiaRepository.findNoticiaMesAnio(String.valueOf(anio), String.valueOf(mes));
 		List<NoticiasReponse> response = new ArrayList<>();
 		listNoticia.forEach(item -> {
 			NoticiasReponse n = new NoticiasReponse();
@@ -512,8 +518,75 @@ public class SeguroCesacionServiceImpl extends SeguroCesacionServiceAbstract imp
 
 	@Override
 	public MensajeBean registrarSolcitudDs(SolicitudDs solicitudDs) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		try {
+			Optional<PersRem> psRem = persRemRepository.findByVCodAdm(solicitudDs.getvCodAdm());
+			Optional<PersRemDatos> psRemDatos = persRemDatosRepository.findByVCodAdm(solicitudDs.getvCodAdm());
+			if (psRem.isPresent()) {
+				if (!psRemDatos.isPresent()) {
+					PersRemDatos psDatos = new PersRemDatos();
+					psDatos.setvCodAdm(solicitudDs.getvCodAdm());
+					psDatos.setvDir(solicitudDs.getDireccion());
+					psDatos.setvDist(solicitudDs.getDistrito());
+					psDatos.setvProv(solicitudDs.getProvincia());
+					psDatos.setvDepa(solicitudDs.getDepartamento());
+					psDatos.setvNroCel(solicitudDs.getNroContacto());
+					psDatos.setvEmail(solicitudDs.getCorreo());
+					psDatos.setvBanco(solicitudDs.getTipoBanco());
+					psDatos.setvNroCta(solicitudDs.getNroCuenta());
+					psDatos.setvNroCci(solicitudDs.getNroCii());
+					psDatos.setdFecIng(new Date());
+					persRemDatosRepository.save(psDatos);
 
+//					psDatos.setvFlagVerif(null);
+//					psDatos.setvFlagReg(null);
+//					psDatos.setvFlagVouch(null);
+//					psDatos.setvFlagCrono(null);
+//					psDatos.setvFlagDesem(null);
+//					psDatos.setvFlagFalle(null);
+//					psDatos.setvFlagAtrasoPres(null);
+//					psDatos.setvAnomesAtraso(null);
+
+					persRemRepository.updateCuenta(solicitudDs.getNroContacto(), solicitudDs.getCorreo(),
+							solicitudDs.getDireccion(), solicitudDs.getNroCuenta(), solicitudDs.getNroCii(),
+							solicitudDs.getvCodAdm());
+					
+					return MensajeUtil.mensajeReponse("200", "Registro solicitud exitoso");
+				}
+
+				PersRemDatos psDatos = new PersRemDatos();
+				psDatos.setvCodAdm(solicitudDs.getvCodAdm());
+				psDatos.setvDir(solicitudDs.getDireccion());
+				psDatos.setvDist(solicitudDs.getDistrito());
+				psDatos.setvProv(solicitudDs.getProvincia());
+				psDatos.setvDepa(solicitudDs.getDepartamento());
+				psDatos.setvNroCel(solicitudDs.getNroContacto());
+				psDatos.setvEmail(solicitudDs.getCorreo());
+				psDatos.setvBanco(solicitudDs.getTipoBanco());
+				psDatos.setvNroCta(solicitudDs.getNroCuenta());
+				psDatos.setvNroCci(solicitudDs.getNroCii());
+				psDatos.setdFecIng(new Date());
+				psDatos.setvFlagVerif(psRemDatos.get().getvFlagVerif());
+				psDatos.setvFlagReg(psRemDatos.get().getvFlagReg());
+				psDatos.setvFlagVouch(psRemDatos.get().getvFlagVouch());
+				psDatos.setvFlagCrono(psRemDatos.get().getvFlagCrono());
+				psDatos.setvFlagDesem(psRemDatos.get().getvFlagDesem());
+				psDatos.setvFlagFalle(psRemDatos.get().getvFlagFalle());
+				psDatos.setvFlagAtrasoPres(psRemDatos.get().getvFlagAtrasoPres());
+				psDatos.setvAnomesAtraso(psRemDatos.get().getvAnomesAtraso());
+				persRemDatosRepository.save(psDatos);
+				
+				persRemRepository.updateCuenta(solicitudDs.getNroContacto(), solicitudDs.getCorreo(),
+						solicitudDs.getDireccion(), solicitudDs.getNroCuenta(), solicitudDs.getNroCii(),
+						solicitudDs.getvCodAdm());
+
+				return MensajeUtil.mensajeReponse("200", "SE ACTUALIZARON LOS DATOS ");
+			} else {
+				return MensajeUtil.mensajeReponse("500", "USUARIO NO ENCONTRADO");
+			}
+
+		} catch (Exception e) {
+			//utilLog.imprimirLog(ConstantesUtils.LEVEL_ERROR, e.getMessage(), Thread.currentThread().getStackTrace());
+			return MensajeUtil.mensajeReponse("500",  e.getMessage());
+		}
+	}
 }

@@ -54,5 +54,14 @@ public abstract class SeguroCesacionServiceAbstract {
 	
 	@Autowired
 	protected LineaProductoRepository lineaProductoRepository;
+	
+	@Autowired
+	protected PersRemDatosRepository persRemDatosRepository;
+	
+	@Autowired
+	protected PersRemEtapaRepository persRemEtapaRepository;
+	
+	@Autowired
+	protected PersRemRepository persRemRepository;
 }
 

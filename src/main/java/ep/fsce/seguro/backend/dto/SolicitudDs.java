@@ -2,6 +2,7 @@ package ep.fsce.seguro.backend.dto;
 
 public class SolicitudDs {
 
+	private String vCodAdm;
 	private String tipoBanco;
 	private String nroCuenta;
 	private String nroCii;
@@ -82,6 +83,14 @@ public class SolicitudDs {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public String getvCodAdm() {
+		return vCodAdm;
+	}
+
+	public void setvCodAdm(String vCodAdm) {
+		this.vCodAdm = vCodAdm;
 	}
 
 }

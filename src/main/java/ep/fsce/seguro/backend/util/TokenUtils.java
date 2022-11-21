@@ -17,7 +17,7 @@ public class TokenUtils {
 	private final static String ACCESS_TOKEN_SECRET = "Y2xhdmVfc2VjcmV0YV90b2tlbl9jbGF2ZV9zZWNyZXRhX3Rva2Vu";
 	private final static Long ACCESS_TOKEN_VALIDITY_SECONDS = 2_592_000L;
 
-	public static String createToken(String nombre, String email) {
+	public static String createToken(String nombre, String email, String rol) {
 
 		long expirationTime = ACCESS_TOKEN_VALIDITY_SECONDS * 1_000;
 
@@ -25,6 +25,7 @@ public class TokenUtils {
 
 		Map<String, Object> extra = new HashMap<>();
 		extra.put("nombre", nombre);
+		extra.put("rol", rol);
 
 		return Jwts.builder().setSubject(email).setExpiration(expirationDate).addClaims(extra)
 				.signWith(Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET.getBytes())).compact();

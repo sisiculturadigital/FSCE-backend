@@ -11,11 +11,11 @@ public class PersonaBean {
 	private Integer edad;
 	private String proceso;
 	private Double impRem;
-	private Double ingBruto;
-	private Double ingLiquido;
 	private Date fechIngreso;
 	private Integer aaServicio;
 	private String situacion;
+	private String nroApo;
+	private Double impApo;
 
 	public String getCodAdm() {
 		return codAdm;
@@ -65,22 +65,6 @@ public class PersonaBean {
 		this.proceso = proceso;
 	}
 
-	public Double getIngBruto() {
-		return ingBruto;
-	}
-
-	public void setIngBruto(Double ingBruto) {
-		this.ingBruto = ingBruto;
-	}
-
-	public Double getIngLiquido() {
-		return ingLiquido;
-	}
-
-	public void setIngLiquido(Double ingLiquido) {
-		this.ingLiquido = ingLiquido;
-	}
-
 	public Date getFechIngreso() {
 		return fechIngreso;
 	}
@@ -111,6 +95,22 @@ public class PersonaBean {
 
 	public void setImpRem(Double impRem) {
 		this.impRem = impRem;
+	}
+
+	public String getNroApo() {
+		return nroApo;
+	}
+
+	public void setNroApo(String nroApo) {
+		this.nroApo = nroApo;
+	}
+
+	public Double getImpApo() {
+		return impApo;
+	}
+
+	public void setImpApo(Double impApo) {
+		this.impApo = impApo;
 	}
 
 }

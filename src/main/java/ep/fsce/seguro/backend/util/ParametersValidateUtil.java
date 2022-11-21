@@ -1,6 +1,8 @@
 package ep.fsce.seguro.backend.util;
 
 import ep.fsce.seguro.backend.dto.request.AuthDTO;
+import ep.fsce.seguro.backend.dto.request.EmailDTO;
+import ep.fsce.seguro.backend.dto.request.PwdDTO;
 import ep.fsce.seguro.backend.dto.request.UsuarioDTO;
 
 public class ParametersValidateUtil {
@@ -50,6 +52,19 @@ public class ParametersValidateUtil {
 
 		return true;
 	}
+	
+	public static boolean cumpleValidacionPassword(PwdDTO pwd) {
+
+		if (pwd.getEmail().isEmpty() || pwd.getEmail() == null) {
+			return false;
+		}
+
+		if (pwd.getNewPwd().isEmpty() || pwd.getNewPwd() == null) {
+			return false;
+		}
+
+		return true;
+	}
 
 	public static boolean validarCamposIdDetalle(String codAdm, String nroChe, String aaCuo, String mmCuo) {
 		
@@ -71,6 +86,21 @@ public class ParametersValidateUtil {
 
 		return true;
 		
+	}
+
+	public static boolean cumpleValidacionEmail(EmailDTO email) {
+		if (email.getMessage().isEmpty()) {
+			return false;
+		}
+		
+		if (email.getSubject().isEmpty()) {
+			return false;
+		}
+		
+		if (email.getTo().isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 }

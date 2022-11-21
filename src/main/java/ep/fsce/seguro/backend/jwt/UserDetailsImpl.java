@@ -50,6 +50,11 @@ public class UserDetailsImpl implements UserDetails {
 	public String getNombre() {
 		return usuario.getNombres();
 	}
+	
+	public String getRol() {
+		return usuario.getTipoUser().getDesTipo();
+	}
+
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

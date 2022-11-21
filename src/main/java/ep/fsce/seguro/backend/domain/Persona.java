@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tw_persona")
+@Table(name = "TW_PERSONA")
 public class Persona implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,7 +43,7 @@ public class Persona implements Serializable {
 	private Date fecNac;
 
 	@Column(name = "FECHA_ING")
-	private String fechaIng;
+	private Date fechaIng;
 
 	@Column(name = "AA_SERV")
 	private Integer aaServ;
@@ -141,11 +141,11 @@ public class Persona implements Serializable {
 		this.fecNac = fecNac;
 	}
 
-	public String getFechaIng() {
+	public Date getFechaIng() {
 		return fechaIng;
 	}
 
-	public void setFechaIng(String fechaIng) {
+	public void setFechaIng(Date fechaIng) {
 		this.fechaIng = fechaIng;
 	}
 
